@@ -32,7 +32,7 @@ export async function POST(request: Request) {
                 poll_id,
                 option_ids, // JSON array
                 session_id
-            })
+            } as any)
             .select()
             .single()
 

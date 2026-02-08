@@ -13,11 +13,13 @@ export default async function DisplayPage({ params }: PageProps) {
     const eventId = params.id
     const supabase = await createClient()
 
-    const { data: event } = await supabase
+    const { data: eventData } = await supabase
         .from("events")
-        .select("name, event_code")
+        .select("*")
         .eq("id", eventId)
         .single()
+
+    const event = eventData as any
 
     if (!event) {
         notFound()

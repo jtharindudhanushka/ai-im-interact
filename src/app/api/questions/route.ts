@@ -25,7 +25,7 @@ export async function POST(request: Request) {
                 event_id,
                 content,
                 status: 'pending' // Always pending first
-            })
+            } as any)
             .select()
             .single()
 

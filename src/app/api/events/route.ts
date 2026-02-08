@@ -26,7 +26,7 @@ export async function POST(request: Request) {
                 created_by: user.id,
                 settings: settings || { qa_enabled: true, polls_enabled: true },
                 status: 'draft'
-            })
+            } as any)
             .select()
             .single()
 

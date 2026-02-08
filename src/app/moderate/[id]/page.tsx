@@ -23,11 +23,13 @@ export default async function ModeratorPage({ params }: PageProps) {
     }
 
     // Verify Event & Access
-    const { data: event } = await supabase
+    const { data: eventData } = await supabase
         .from("events")
         .select("*")
         .eq("id", eventId)
         .single()
+
+    const event = eventData as any
 
     if (!event) {
         notFound()

@@ -30,7 +30,7 @@ export async function POST(request: Request) {
                 options, // JSONB array
                 poll_type: poll_type || 'single',
                 active: false // Inactive by default
-            })
+            } as any)
             .select()
             .single()
 
