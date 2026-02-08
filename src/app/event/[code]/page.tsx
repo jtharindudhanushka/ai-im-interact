@@ -4,6 +4,7 @@ import { QuestionForm } from "@/components/features/participant/question-form"
 import { PollVoting } from "@/components/features/participant/poll-voting"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MessageSquare, BarChart2 } from "lucide-react"
+import { ParticipantHeader } from "@/components/features/participant/header"
 
 interface PageProps {
     params: Promise<{
@@ -29,43 +30,33 @@ export default async function ParticipantPage({ params }: PageProps) {
     }
 
     return (
-        <div className="min-h-screen bg-surface pb-20">
-            {/* Header */}
-            <header className="sticky top-0 z-10 bg-surface/80 px-6 py-4 backdrop-blur-md">
-                <div className="mx-auto max-w-lg">
-                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                        {event.name}
-                    </p>
-                    <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                        Hi, Welcome 👋
-                    </h1>
-                </div>
-            </header>
+        <div className="min-h-screen bg-surface pb-20 selection:bg-primary/20">
+            <ParticipantHeader eventName={event.name} />
 
-            <main className="container mx-auto max-w-lg p-4">
+            <main className="container mx-auto max-w-lg p-4 pt-6">
                 <Tabs defaultValue="ask" className="w-full">
-                    <TabsList className="mb-8 grid w-full grid-cols-2 rounded-full border bg-muted/50 p-1">
+                    <TabsList className="mb-8 grid w-full grid-cols-2 h-14 rounded-full border bg-muted/50 p-1.5 ring-1 ring-black/5 dark:ring-white/10">
                         <TabsTrigger
                             value="ask"
-                            className="rounded-full py-3 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md"
+                            className="rounded-full h-full text-base font-medium transition-all data-[state=active]:bg-surface-elevated data-[state=active]:text-primary data-[state=active]:shadow-sm"
                         >
                             <MessageSquare className="mr-2 h-4 w-4" />
                             Ask
                         </TabsTrigger>
                         <TabsTrigger
                             value="poll"
-                            className="rounded-full py-3 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md"
+                            className="rounded-full h-full text-base font-medium transition-all data-[state=active]:bg-surface-elevated data-[state=active]:text-primary data-[state=active]:shadow-sm"
                         >
                             <BarChart2 className="mr-2 h-4 w-4" />
                             Poll
                         </TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="ask" className="animate-in fade-in slide-in-from-left-4 duration-300">
+                    <TabsContent value="ask" className="animate-in fade-in slide-in-from-left-4 duration-500 fill-mode-both">
                         <QuestionForm eventId={event.id} />
                     </TabsContent>
 
-                    <TabsContent value="poll" className="animate-in fade-in slide-in-from-right-4 duration-300">
+                    <TabsContent value="poll" className="animate-in fade-in slide-in-from-right-4 duration-500 fill-mode-both">
                         <PollVoting eventId={event.id} />
                     </TabsContent>
                 </Tabs>

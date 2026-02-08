@@ -50,7 +50,6 @@ export default function AdminDashboard() {
     const createEvent = async () => {
         if (!newEventName || !newEventCode) return
 
-        // Auth check should be here or in RLS, for MVP assuming admin logged in or public dev mode
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) {
             toast({ title: "Error", description: "Not authenticated", variant: "destructive" })
@@ -70,6 +69,17 @@ export default function AdminDashboard() {
             setNewEventName("")
             setNewEventCode("")
             toast({ title: "Event Created", description: "Event is ready." })
+        }
+    }
+
+    const deleteEvent = async (id: string) => {
+        const { error } = await supabase.from("events").delete().eq("id", id)
+        if (error) {
+            toast({ title: "Error", description: error.message, variant: "destructive" })
+        } else {
+            setEvents(events.filter(e => e.id !== id))
+            if (selectedEventId === id) setSelectedEventId(null)
+            toast({ title: "Event Deleted", description: "Event has been removed." })
         }
     }
 
@@ -96,7 +106,6 @@ export default function AdminDashboard() {
     const togglePollStatus = async (poll: Poll) => {
         const newStatus = !poll.active
 
-        // If activating, deactivate others? Ideally yes for single active poll requirement
         if (newStatus) {
             await supabase.from("polls").update({ active: false }).eq("event_id", selectedEventId)
         }
@@ -107,7 +116,6 @@ export default function AdminDashboard() {
             .eq("id", poll.id)
 
         if (!error) {
-            // Optimistic update or refetch
             setPolls(prev => prev.map(p => {
                 if (p.id === poll.id) return { ...p, active: newStatus }
                 if (newStatus && p.id !== poll.id) return { ...p, active: false }
@@ -148,11 +156,26 @@ export default function AdminDashboard() {
                             {events.map(event => (
                                 <div
                                     key={event.id}
-                                    onClick={() => setSelectedEventId(event.id)}
-                                    className={`p-4 rounded-lg border cursor-pointer hover:bg-muted/50 transition-colors ${selectedEventId === event.id ? 'border-primary bg-muted/30' : ''}`}
+                                    className={`relative p-4 rounded-lg border group hover:bg-muted/50 transition-colors ${selectedEventId === event.id ? 'border-primary bg-muted/30' : ''}`}
                                 >
-                                    <div className="font-bold">{event.name}</div>
-                                    <div className="text-sm text-muted-foreground">{event.event_code}</div>
+                                    <div className="cursor-pointer" onClick={() => setSelectedEventId(event.id)}>
+                                        <div className="font-bold">{event.name}</div>
+                                        <div className="text-sm text-muted-foreground">{event.event_code}</div>
+                                    </div>
+
+                                    <div className="absolute top-2 right-2 hidden group-hover:flex gap-1 bg-background/80 backdrop-blur-sm p-1 rounded shadow-sm">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                if (confirm('Delete this event? This cannot be undone.')) deleteEvent(event.id)
+                                            }}
+                                        >
+                                            <Trash className="h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </div>
                             ))}
                         </CardContent>
