@@ -7,13 +7,13 @@ import { ShieldAlert, LogOut } from "lucide-react"
 import Link from "next/link"
 
 interface PageProps {
-    params: {
+    params: Promise<{
         id: string
-    }
+    }>
 }
 
 export default async function ModeratorPage({ params }: PageProps) {
-    const eventId = params.id
+    const { id: eventId } = await params
     const supabase = await createClient()
 
     // Verify Auth

@@ -4,13 +4,13 @@ import { WordCloud } from "@/components/features/display/word-cloud"
 import { PollDisplay } from "@/components/features/display/poll-display"
 
 interface PageProps {
-    params: {
+    params: Promise<{
         id: string
-    }
+    }>
 }
 
 export default async function DisplayPage({ params }: PageProps) {
-    const eventId = params.id
+    const { id: eventId } = await params
     const supabase = await createClient()
 
     const { data: eventData } = await supabase

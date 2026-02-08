@@ -6,13 +6,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MessageSquare, BarChart2 } from "lucide-react"
 
 interface PageProps {
-    params: {
+    params: Promise<{
         code: string
-    }
+    }>
 }
 
 export default async function ParticipantPage({ params }: PageProps) {
-    const code = params.code
+    const { code } = await params
     const supabase = await createClient()
 
     // Verify event code

@@ -43,11 +43,7 @@ export default function Home() {
               </Button>
             </form>
 
-            <div className="pt-4">
-              <Button variant="link" size="sm" asChild className="text-muted-foreground">
-                <Link href="/login">Staff Login</Link>
-              </Button>
-            </div>
+
           </CardContent>
         </Card>
       </div>
