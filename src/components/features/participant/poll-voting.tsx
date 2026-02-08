@@ -133,14 +133,14 @@ export function PollVoting({ eventId }: PollVotingProps) {
                 <CardHeader className="text-center">
                     <CardTitle className="text-2xl">{activePoll.question}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-8 p-6">
                     {hasVoted ? (
-                        <div className="py-8 text-center">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30">
-                                <span className="text-2xl">✓</span>
+                        <div className="py-12 text-center animate-in zoom-in-50 duration-500">
+                            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400 shadow-inner">
+                                <span className="text-4xl">✓</span>
                             </div>
-                            <h3 className="text-xl font-medium">Vote Submitted!</h3>
-                            <p className="mt-2 text-muted-foreground">Wait for results on the main screen.</p>
+                            <h3 className="text-2xl font-bold tracking-tight">Vote Submitted!</h3>
+                            <p className="mt-3 text-lg text-muted-foreground">Keep watching the main screen.</p>
                         </div>
                     ) : (
                         <>
@@ -150,7 +150,7 @@ export function PollVoting({ eventId }: PollVotingProps) {
                                 className="space-y-3"
                             >
                                 {options.map((opt: any) => (
-                                    <div key={opt.id} className="relative">
+                                    <div key={opt.id} className="relative group">
                                         <RadioGroupItem
                                             value={opt.id}
                                             id={opt.id}
@@ -158,9 +158,10 @@ export function PollVoting({ eventId }: PollVotingProps) {
                                         />
                                         <Label
                                             htmlFor={opt.id}
-                                            className="flex cursor-pointer items-center justify-between rounded-full border-2 border-muted bg-popover px-6 py-4 text-base font-medium transition-all hover:bg-accent peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 peer-data-[state=checked]:text-primary"
+                                            className="flex w-full cursor-pointer items-center justify-between rounded-xl border-2 border-muted bg-card px-6 py-5 text-lg font-medium transition-all hover:border-primary/50 hover:bg-accent peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 peer-data-[state=checked]:text-primary peer-data-[state=checked]:shadow-md"
                                         >
                                             {opt.text}
+                                            <div className="h-5 w-5 rounded-full border-2 border-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary transition-colors" />
                                         </Label>
                                     </div>
                                 ))}
@@ -168,7 +169,7 @@ export function PollVoting({ eventId }: PollVotingProps) {
 
                             <Button
                                 size="lg"
-                                className="w-full text-lg"
+                                className="w-full h-14 rounded-xl text-lg font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                                 onClick={handleVote}
                                 disabled={!selectedOption || isVoting}
                             >

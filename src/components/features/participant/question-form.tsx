@@ -52,40 +52,42 @@ export function QuestionForm({ eventId }: QuestionFormProps) {
     }
 
     return (
-        <div className="mx-auto max-w-lg space-y-6 text-center">
-            <div className="space-y-2">
-                <h2 className="text-2xl font-semibold tracking-tight">Ask a Question</h2>
-                <p className="text-muted-foreground">
-                    Submit your question for the speakers.
-                </p>
+        <div className="space-y-6 p-6">
+            <div className="text-center space-y-2">
+                <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent">Ask anything</h2>
+                <p className="text-muted-foreground text-sm">Your question will be reviewed by moderators.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="relative">
+                <div className="relative group">
                     <Textarea
                         placeholder="Type your question here..."
-                        className="min-h-[120px] resize-none rounded-3xl border-2 px-6 py-4 text-lg focus-visible:ring-offset-0"
-                        maxLength={280}
                         value={question}
                         onChange={(e) => setQuestion(e.target.value)}
+                        className="min-h-[160px] resize-none rounded-2xl border-2 border-muted bg-background/50 p-4 text-lg shadow-sm transition-all focus:border-primary/50 focus:ring-4 focus:ring-primary/10 group-hover:border-primary/30"
+                        maxLength={280}
+                        required
                     />
-                    <div className="absolute bottom-4 right-4 text-xs text-muted-foreground">
+                    <div className="absolute bottom-4 right-4 text-xs text-muted-foreground font-mono bg-background/80 px-2 py-1 rounded-full border">
                         {question.length}/280
                     </div>
                 </div>
-
                 <Button
                     type="submit"
-                    size="lg"
-                    className="h-12 w-full text-lg"
-                    disabled={!question.trim() || isSubmitting}
+                    className="h-14 w-full rounded-2xl text-lg font-semibold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    disabled={isSubmitting || !question.trim()}
                 >
                     {isSubmitting ? (
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Sending...
+                        </>
                     ) : (
-                        <Send className="mr-2 h-5 w-5" />
+                        <>
+                            <Send className="mr-2 h-5 w-5" />
+                            Submit Question
+                        </>
                     )}
-                    Submit Question
                 </Button>
             </form>
         </div>

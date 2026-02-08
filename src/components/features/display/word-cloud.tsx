@@ -88,11 +88,21 @@ export function WordCloud({ eventId }: WordCloudProps) {
                     <motion.div
                         key={q.id}
                         layout
-                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.5 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                        className={`inline-block rounded-full px-6 py-3 font-medium shadow-sm backdrop-blur-sm ${getRandomColor(q.id)} ${getRandomSize(q.id)}`}
+                        initial={{ opacity: 0, scale: 0.5, y: 20 }}
+                        animate={{
+                            opacity: 1,
+                            scale: 1,
+                            y: 0,
+                            transition: {
+                                type: "spring",
+                                stiffness: 400,
+                                damping: 15,
+                                mass: 0.8
+                            }
+                        }}
+                        exit={{ opacity: 0, scale: 0, transition: { duration: 0.2 } }}
+                        className={`inline-flex items-center justify-center text-center rounded-3xl px-6 py-3 font-semibold shadow-md backdrop-blur-md border border-white/10 ${getRandomColor(q.id)} ${getRandomSize(q.id)} cursor-default select-none`}
+                        whileHover={{ scale: 1.05, rotate: 2, zIndex: 10 }}
                     >
                         {q.content}
                     </motion.div>
