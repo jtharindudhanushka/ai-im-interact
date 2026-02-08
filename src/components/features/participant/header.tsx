@@ -52,7 +52,10 @@ export function ParticipantHeader({ eventName }: ParticipantHeaderProps) {
                                 <p>
                                     <strong>Live Polls:</strong> Participate in polls created by the presenters in real-time.
                                 </p>
-                                <p className="pt-4 text-xs">
+                                <div className="rounded-lg bg-muted p-3 text-xs italic">
+                                    <span className="font-semibold not-italic">Privacy Notice:</span> Your participation is fully anonymous. No user IDs or personal data are collected or displayed.
+                                </div>
+                                <p className="pt-2 text-xs text-center border-t">
                                     Developed for the AI@IM Community.
                                 </p>
                             </div>
