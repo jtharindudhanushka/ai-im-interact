@@ -18,11 +18,9 @@ export function ParticipantView({ event }: ParticipantViewProps) {
     return (
         <div className="min-h-screen relative overflow-hidden bg-background pb-20 selection:bg-primary/20">
             {/* Subtle Animated Background */}
-            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-3xl animate-pulse duration-[10000ms]" />
-                <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] rounded-full bg-secondary/10 blur-3xl animate-pulse duration-[15000ms] delay-1000" />
-                <div className="absolute -bottom-[10%] left-[20%] w-[60%] h-[40%] rounded-full bg-primary/5 blur-3xl animate-pulse duration-[12000ms] delay-500" />
-            </div>
+            {/* Subtle Gradient Background */}
+            <div className="absolute inset-0 z-0 bg-gradient-to-br from-background via-muted/30 to-background animate-gradient-slow opacity-60" />
+            <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-40 animate-pulse-slow" />
 
             <div className="relative z-10">
                 <ParticipantHeader eventName={event.name} />

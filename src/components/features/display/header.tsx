@@ -34,7 +34,7 @@ export function DisplayHeader({ eventCode, eventName }: DisplayHeaderProps) {
     return (
         <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 pointer-events-none">
             {/* Left: Event Name */}
-            <h1 className="text-3xl font-extrabold tracking-tight text-foreground/90 drop-shadow-sm pointer-events-auto">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground/90 drop-shadow-sm pointer-events-auto">
                 {eventName}
             </h1>
 

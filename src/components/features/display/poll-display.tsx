@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Cell, LabelList } from "recharts"
 import type { Database } from "@/types/database.types"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { motion } from "framer-motion"
+import { Progress } from "@/components/ui/progress"
+import { motion, AnimatePresence } from "framer-motion"
 
 type Poll = Database["public"]["Tables"]["polls"]["Row"]
 
@@ -15,7 +15,7 @@ interface PollDisplayProps {
 
 export function PollDisplay({ eventId }: PollDisplayProps) {
     const [activePoll, setActivePoll] = useState<Poll | null>(null)
-    const [data, setData] = useState<{ name: string, votes: number }[]>([])
+    const [data, setData] = useState<{ id: string, text: string, votes: number, percentage: number }[]>([])
     const [totalVotes, setTotalVotes] = useState(0)
     const supabase = createClient()
 
@@ -66,7 +66,7 @@ export function PollDisplay({ eventId }: PollDisplayProps) {
         }
     }, [eventId])
 
-    // Need separate subscription for VOTES on the active poll
+    // Subscribe to VOTES on the active poll
     useEffect(() => {
         if (!activePoll) return
 
@@ -81,9 +81,6 @@ export function PollDisplay({ eventId }: PollDisplayProps) {
                     filter: `poll_id=eq.${activePoll.id}`,
                 },
                 () => {
-                    // On every vote, re-fetch counts
-                    // Ideally we'd just increment local state, but options structure makes it tricky to map ID to index
-                    // Let's just re-run the aggregate query
                     updateVoteCounts(activePoll.id, activePoll.options as any[])
                 }
             )
@@ -96,7 +93,6 @@ export function PollDisplay({ eventId }: PollDisplayProps) {
 
 
     const updateVoteCounts = async (pollId: string, options: any[]) => {
-        // 1. Fetch all votes for this poll
         const { data: votes } = await supabase
             .from('poll_votes')
             .select('option_ids')
@@ -104,7 +100,6 @@ export function PollDisplay({ eventId }: PollDisplayProps) {
 
         if (!votes) return
 
-        // 2. Aggregate
         const counts: Record<string, number> = {}
         options.forEach(opt => counts[opt.id] = 0)
 
@@ -119,11 +114,12 @@ export function PollDisplay({ eventId }: PollDisplayProps) {
             })
         })
 
-        // 3. Format for Recharts
         const chartData = options.map(opt => ({
-            name: opt.text,
-            votes: counts[opt.id] || 0
-        }))
+            id: opt.id,
+            text: opt.text,
+            votes: counts[opt.id] || 0,
+            percentage: total === 0 ? 0 : Math.round(((counts[opt.id] || 0) / total) * 100)
+        })).sort((a, b) => b.votes - a.votes) // Sort by votes
 
         setData(chartData)
         setTotalVotes(total)
@@ -131,47 +127,52 @@ export function PollDisplay({ eventId }: PollDisplayProps) {
 
     if (!activePoll) {
         return (
-            <div className="flex h-full flex-col items-center justify-center p-8 text-center bg-muted/10">
-                <h2 className="text-3xl font-bold text-muted-foreground/50">AI & IM Live</h2>
-                <p className="text-muted-foreground/40 mt-2">Waiting for next poll...</p>
+            <div className="flex h-full flex-col items-center justify-center p-8 text-center bg-muted/5 rounded-3xl border-2 border-dashed border-muted">
+                <div className="bg-background/50 p-6 rounded-full shadow-sm mb-4">
+                    <span className="text-4xl">📊</span>
+                </div>
+                <h2 className="text-2xl font-bold text-muted-foreground/70">Waiting for Poll</h2>
+                <p className="text-muted-foreground/50 mt-2">Polls active will appear here instantly.</p>
             </div>
         )
     }
 
     return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="h-full p-6"
-        >
-            <Card className="h-full border-0 shadow-none bg-transparent">
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-2xl md:text-3xl lg:text-4xl text-center leading-tight">
+        <Card className="h-full border-0 shadow-lg bg-card/80 backdrop-blur-md rounded-3xl overflow-hidden flex flex-col w-full max-w-2xl mx-auto">
+            <CardHeader className="bg-primary/5 pb-6 border-b">
+                <div className="flex justify-between items-start gap-4">
+                    <CardTitle className="text-2xl md:text-3xl font-bold leading-tight break-words">
                         {activePoll.question}
                     </CardTitle>
-                    <p className="text-center text-muted-foreground text-lg">Total Votes: {totalVotes}</p>
-                </CardHeader>
-                <CardContent className="h-[calc(100%-8rem)] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={data} layout="vertical" margin={{ top: 20, right: 50, left: 20, bottom: 5 }}>
-                            <XAxis type="number" hide />
-                            <YAxis
-                                dataKey="name"
-                                type="category"
-                                width={150}
-                                tick={{ fontSize: 16, fill: 'currentColor' }}
-                                interval={0}
-                            />
-                            <Bar dataKey="votes" fill="var(--primary)" radius={[0, 10, 10, 0]} barSize={40}>
-                                <LabelList dataKey="votes" position="right" style={{ fontSize: '18px', fontWeight: 'bold' }} />
-                                {data.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? 'hsl(var(--primary))' : 'hsl(var(--primary) / 0.8)'} />
-                                ))}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
-                </CardContent>
-            </Card>
-        </motion.div>
+                    <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-bold whitespace-nowrap">
+                        Live Vote
+                    </div>
+                </div>
+                <p className="text-muted-foreground font-medium mt-2 flex items-center gap-2">
+                    <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    {totalVotes} total votes
+                </p>
+            </CardHeader>
+            <CardContent className="flex-1 overflow-y-auto p-6 space-y-6">
+                <AnimatePresence>
+                    {data.map((opt, index) => (
+                        <motion.div
+                            key={opt.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="space-y-2"
+                        >
+                            <div className="flex justify-between items-end text-sm font-medium">
+                                <span className="text-lg">{opt.text}</span>
+                                <span className="text-primary font-bold text-lg">{opt.percentage}% <span className="text-muted-foreground text-sm font-normal">({opt.votes})</span></span>
+                            </div>
+                            <Progress value={opt.percentage} className="h-4 rounded-full" />
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+            </CardContent>
+        </Card>
     )
 }
+
