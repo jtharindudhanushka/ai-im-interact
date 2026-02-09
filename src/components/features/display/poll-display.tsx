@@ -6,6 +6,7 @@ import type { Database } from "@/types/database.types"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { motion, AnimatePresence } from "framer-motion"
+import { BarChart2 } from "lucide-react"
 
 type Poll = Database["public"]["Tables"]["polls"]["Row"]
 
@@ -128,8 +129,8 @@ export function PollDisplay({ eventId }: PollDisplayProps) {
     if (!activePoll) {
         return (
             <div className="flex h-full flex-col items-center justify-center p-8 text-center bg-muted/5 rounded-3xl border-2 border-dashed border-muted">
-                <div className="bg-background/50 p-6 rounded-full shadow-sm mb-4">
-                    <span className="text-4xl">📊</span>
+                <div className="bg-primary/10 p-6 rounded-full shadow-sm mb-4">
+                    <BarChart2 className="h-12 w-12 text-primary opacity-50" />
                 </div>
                 <h2 className="text-2xl font-bold text-muted-foreground/70">Waiting for Poll</h2>
                 <p className="text-muted-foreground/50 mt-2">Polls active will appear here instantly.</p>

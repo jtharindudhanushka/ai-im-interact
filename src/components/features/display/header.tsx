@@ -32,14 +32,14 @@ export function DisplayHeader({ eventCode, eventName }: DisplayHeaderProps) {
     }
 
     return (
-        <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 pointer-events-none">
+        <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center px-8 py-6 bg-background/50 backdrop-blur-md border-b border-white/10 relative z-50 gap-4">
             {/* Left: Event Name */}
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground/90 drop-shadow-sm pointer-events-auto">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground/90 drop-shadow-sm pointer-events-auto justify-self-start truncate max-w-full">
                 {eventName}
             </h1>
 
             {/* Center: Join Info */}
-            <div className="absolute left-1/2 top-6 -translate-x-1/2 pointer-events-auto">
+            <div className="pointer-events-auto justify-self-center">
                 <div className="flex items-center gap-4 bg-surface/80 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10 shadow-lg transition-all hover:scale-105 hover:bg-surface/90 hover:shadow-xl">
                     <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Join at</span>
@@ -54,7 +54,7 @@ export function DisplayHeader({ eventCode, eventName }: DisplayHeaderProps) {
             </div>
 
             {/* Right: Actions */}
-            <div className="pointer-events-auto">
+            <div className="pointer-events-auto justify-self-end">
                 <Button
                     variant="outline"
                     size="icon"

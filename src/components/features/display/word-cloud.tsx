@@ -61,29 +61,7 @@ export function WordCloud({ eventId }: WordCloudProps) {
     // Simple layout algorithm (randomized positions for now, sophisticated packing would need D3-cloud or similar)
     // For this MVP, we will use a flex/grid flow with randomized sizes/colors for effect.
 
-    // Track newly added questions for glow effect
-    const [newFields, setNewFields] = useState<Set<string>>(new Set())
 
-    useEffect(() => {
-        if (questions.length > 0) {
-            const latest = questions[0].id
-            setNewFields(prev => {
-                const next = new Set(prev)
-                next.add(latest)
-                return next
-            })
-
-            // Remove glow after 5 seconds
-            const timer = setTimeout(() => {
-                setNewFields(prev => {
-                    const next = new Set(prev)
-                    if (next.has(latest)) next.delete(latest)
-                    return next
-                })
-            }, 5000)
-            return () => clearTimeout(timer)
-        }
-    }, [questions])
 
     const getRandomSize = (id: string) => {
         // Deterministic random based on ID char
@@ -150,11 +128,7 @@ export function WordCloud({ eventId }: WordCloudProps) {
                             }}
                             exit={{ opacity: 0, scale: 0, transition: { duration: 0.2 } }}
                             className={`inline-flex items-center justify-center text-center rounded-3xl px-6 py-3 font-semibold shadow-md backdrop-blur-md border border-white/10 ${getRandomColor(q.id)} ${getRandomSize(q.id)} cursor-default select-none transition-all duration-500`}
-                            style={{
-                                boxShadow: newFields.has(q.id)
-                                    ? "0 0 20px 5px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255,255,255,0.5)"
-                                    : "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
-                            }}
+
                             whileHover={{ scale: 1.05, rotate: 2, zIndex: 10 }}
                         >
                             {q.content}
